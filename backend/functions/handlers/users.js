@@ -97,4 +97,52 @@ exports.login = (req, res) => {
       }
     });
 };
-exports.getUserInfo = (req, res) => {};
+
+// GET USER INFO
+exports.getUserInfo = (req, res) => {
+  const uid = req.body.uid;
+  var obj = {};
+  db.collection("users")
+    .doc(uid)
+    .get()
+    .then((user) => {
+      obj.user = user.data();
+      return db.collection("tasks").doc(uid).get();
+    })
+    .then((tasks) => {
+      obj.tasks = tasks.data();
+      res.json(obj);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).send("Error Fetching User");
+    });
+};
+
+exports.getUserInfoByToken(token) = (req, res) => {
+  firebase
+    .auth()
+    .verifyIdToken(token)
+    .then((user) => {
+      const uid = user.credentials.uid;
+      var obj = {};
+      db.collection("users")
+        .doc(uid)
+        .get()
+        .then((user) => {
+          obj.user = user.data();
+          return db.collection("tasks").doc(uid).get();
+        })
+        .then((tasks) => {
+          obj.tasks = tasks.data();
+          res.json(obj);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(400).send("Error Fetching User");
+        });
+    })
+    .catch((err) => {
+      res.status(400).send();
+    });
+};
