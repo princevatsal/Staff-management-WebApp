@@ -196,6 +196,11 @@ const SignUp = (props) => {
       dlNo: formState.values.dlNo,
       name: formState.values.firstName + formState.values.lastName,
     });
+    if (formState.values.dlNo.length < 4) {
+      alert("DlNo too short");
+      setLoading(false);
+      return null;
+    }
     axios({
       method: "post",
       url:
@@ -320,6 +325,7 @@ const SignUp = (props) => {
                   fullWidth
                   label="dlNo"
                   name="dlNo"
+                  required
                   onChange={handleChange}
                   type="text"
                   value={formState.values.dlNo || ""}
