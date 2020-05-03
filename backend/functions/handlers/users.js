@@ -17,9 +17,9 @@ exports.signup = (req, res) => {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
-    confirmPassword: req.body.confirmPassword,
     dlNo: req.body.dlNo,
   };
+  console.log(newUser);
 
   // Validate Data
   const { valid, errors } = validateSignupData(newUser);
@@ -56,9 +56,11 @@ exports.signup = (req, res) => {
       return res.status(201).json({ token });
     })
     .catch((err) => {
-      console.error(err);
+      console.log(err);
       if (err.code === "auth/email-already-in-use") {
-        return res.status(400).json({ email: err.message });
+        return res.status(400).json({ general: err.message });
+      } else if (err.code === "auth/weak-password") {
+        return res.status(400).json({ general: err.message });
       } else {
         return res.status(500).json({ general: err });
       }
@@ -80,15 +82,14 @@ exports.login = (req, res) => {
   firebase
     .auth()
     .signInWithEmailAndPassword(user.email, user.password)
-    .then((data) => {
-      return data.user.getIdToken();
-    })
-    .then((token) => {
-      return res.json({ token });
-    })
+    .then((data) => data.user.getIdToken())
+    .then((token) => res.json({ token }))
     .catch((err) => {
       console.error(err);
-      if (err.code === "auth/wrong-password") {
+      if (
+        err.code === "auth/wrong-password" ||
+        err.code === "auth/user-not-found"
+      ) {
         return res
           .status(403)
           .json({ general: "Wrong credentials, Please try again" });
@@ -119,12 +120,13 @@ exports.getUserInfo = (req, res) => {
     });
 };
 
-exports.getUserInfoByToken(token) = (req, res) => {
-  firebase
+exports.getUserInfoByToken = (req, res) => {
+  admin
     .auth()
-    .verifyIdToken(token)
+    .verifyIdToken(req.body.token)
     .then((user) => {
-      const uid = user.credentials.uid;
+      console.log(user);
+      const uid = user.uid;
       var obj = {};
       db.collection("users")
         .doc(uid)
