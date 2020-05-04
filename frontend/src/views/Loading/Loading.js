@@ -1,15 +1,41 @@
 import React, { useState, useEffect, useContext } from "react";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import { CircularProgress } from "@material-ui/core";
+import { UserContext } from "../../context/userContext";
+
 const axios = require("axios");
-const Loading = () => {
-  const [loading, setLoading] = useState(false);
-  // useEffect(() => {
-  //   if (!loading) {
-  //     window.location.href = "/";
-  //   } else {
-  //     axios.get("/api/getUserInfo").then((data) => {});
-  //   }
-  // }, [loading]);
+const Loading = (props) => {
+  const [loading, setLoading] = useState(true);
+  //global user
+  const { userData, setGlobalUser } = useContext(UserContext);
+  const { history } = props;
+  // console.log();
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      history.push("/sign-in");
+    }
+    if (!loading) {
+      history.push("/dashboard");
+    } else {
+      axios({
+        method: "get",
+        url:
+          "http://localhost:5000/staff-management-753e4/asia-northeast1/api/getUserInfoByToken",
+        params: {
+          token: localStorage.getItem("token"),
+        },
+      })
+        .then((data) => {
+          console.log(data);
+          setGlobalUser(data.data);
+          setLoading(false);
+          history.push("/dashboard");
+        })
+        .catch((err) => alert("unable to fetch user"));
+    }
+    console.log("userData:-", userData);
+  }, []);
   return (
     <div style={styles.container}>
       <CircularProgress />
@@ -25,4 +51,7 @@ const styles = {
     alignItems: "center",
   },
 };
-export default Loading;
+Loading.propTypes = {
+  history: PropTypes.object,
+};
+export default withRouter(Loading);

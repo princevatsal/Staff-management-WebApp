@@ -82,7 +82,10 @@ exports.login = (req, res) => {
   firebase
     .auth()
     .signInWithEmailAndPassword(user.email, user.password)
-    .then((data) => data.user.getIdToken())
+    .then((data) => {
+      console.log(data.user.getRefreshToken);
+      return data.user.getIdToken();
+    })
     .then((token) => res.json({ token }))
     .catch((err) => {
       console.error(err);
@@ -101,7 +104,7 @@ exports.login = (req, res) => {
 
 // GET USER INFO
 exports.getUserInfo = (req, res) => {
-  const uid = req.body.uid;
+  const uid = req.query.uid;
   var obj = {};
   db.collection("users")
     .doc(uid)
@@ -123,9 +126,8 @@ exports.getUserInfo = (req, res) => {
 exports.getUserInfoByToken = (req, res) => {
   admin
     .auth()
-    .verifyIdToken(req.body.token)
+    .verifyIdToken(req.query.token)
     .then((user) => {
-      console.log(user);
       const uid = user.uid;
       var obj = {};
       db.collection("users")
@@ -145,6 +147,7 @@ exports.getUserInfoByToken = (req, res) => {
         });
     })
     .catch((err) => {
+      console.log(err);
       res.status(400).send();
     });
 };

@@ -141,6 +141,9 @@ const SignIn = (props) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (localStorage.getItem("token")) {
+      history.push("/");
+    }
     const errors = validate(formState.values, schema);
 
     setFormState((formState) => ({
