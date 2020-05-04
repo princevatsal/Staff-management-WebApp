@@ -15,6 +15,7 @@ import {
   SignUp as SignUpView,
   SignIn as SignInView,
   NotFound as NotFoundView,
+  Admin,
   Loading,
 } from "./views";
 
@@ -63,6 +64,12 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/account"
+      />
+      <RouteWithLayout
+        component={Admin}
+        exact
+        layout={MainLayout}
+        path="/admin"
       />
       <RouteWithLayout
         component={SettingsView}
