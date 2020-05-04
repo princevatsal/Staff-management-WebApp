@@ -1,6 +1,9 @@
 const functions = require("firebase-functions");
 const app = require("express")();
 
+//middleware
+const MiddleWare = require("./middlewares/auth");
+
 // For Cross Origin Requests
 const cors = require("cors");
 app.use(cors());
@@ -20,6 +23,6 @@ const {
 app.post("/signup", signup);
 app.post("/login", login);
 app.get("/getUserInfo", getUserInfo);
-app.get("/getUserInfoByToken", getUserInfoByToken);
+app.get("/getUserInfoByToken", MiddleWare, getUserInfoByToken);
 // API FORMAT : https://baseurl.com/api/
 exports.api = functions.region("asia-northeast1").https.onRequest(app);

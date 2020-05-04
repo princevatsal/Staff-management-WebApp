@@ -18,8 +18,30 @@ import {
   Admin,
   Loading,
 } from "./views";
+import axios from "axios";
+import { UserContext } from "context/userContext";
 
 const Routes = () => {
+  const [adminState, setAdminState] = React.useState(false);
+
+  const { setUserData } = React.useContext(UserContext);
+
+  React.useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      return;
+    }
+
+    axios
+      .get("/getUserInfoByToken")
+      .then((data) => {
+        setUserData(data.data);
+        if (data.data.user.isAdmin) {
+          setAdminState(true);
+        }
+      })
+      .catch((err) => alert("unable to fetch user"));
+  }, []);
+
   return (
     <Switch>
       <Redirect exact from="/" to="/loading" />
@@ -30,16 +52,16 @@ const Routes = () => {
         path="/dashboard"
       />
       <RouteWithLayout
-        component={Loading}
-        exact
-        layout={Loading}
-        path="/loading"
-      />
-      <RouteWithLayout
         component={UserListView}
         exact
         layout={MainLayout}
         path="/users"
+      />
+      <RouteWithLayout
+        component={Loading}
+        exact
+        layout={Loading}
+        path="/loading"
       />
       <RouteWithLayout
         component={ProductListView}
@@ -65,12 +87,14 @@ const Routes = () => {
         layout={MainLayout}
         path="/account"
       />
-      <RouteWithLayout
-        component={Admin}
-        exact
-        layout={MainLayout}
-        path="/admin"
-      />
+      {adminState && (
+        <RouteWithLayout
+          component={Admin}
+          exact
+          layout={MainLayout}
+          path="/admin"
+        />
+      )}
       <RouteWithLayout
         component={SettingsView}
         exact

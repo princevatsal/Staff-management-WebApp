@@ -145,6 +145,10 @@ const useStyles = makeStyles((theme) => ({
 const SignUp = (props) => {
   const { history } = props;
 
+  if (localStorage.getItem("token")) {
+    history.push("/");
+  }
+
   const classes = useStyles();
 
   const [formState, setFormState] = useState({
@@ -156,11 +160,7 @@ const SignUp = (props) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      history.push("/");
-    }
     const errors = validate(formState.values, schema);
-
     setFormState((formState) => ({
       ...formState,
       isValid: errors ? false : true,
@@ -206,8 +206,7 @@ const SignUp = (props) => {
     }
     axios({
       method: "post",
-      url:
-        "http://localhost:5000/staff-management-753e4/asia-northeast1/api/signup",
+      url: "/signup",
       data: {
         email: formState.values.email,
         password: formState.values.password,

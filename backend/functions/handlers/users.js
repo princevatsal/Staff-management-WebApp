@@ -124,30 +124,31 @@ exports.getUserInfo = (req, res) => {
 };
 
 exports.getUserInfoByToken = (req, res) => {
-  admin
-    .auth()
-    .verifyIdToken(req.query.token)
+  console.log("see middleware:-", req.user);
+  // admin
+  //   .auth()
+  //   .verifyIdToken(req.query.token)
+  //   .then((user) => {
+  const uid = req.user.uid;
+  var obj = {};
+  db.collection("users")
+    .doc(uid)
+    .get()
     .then((user) => {
-      const uid = user.uid;
-      var obj = {};
-      db.collection("users")
-        .doc(uid)
-        .get()
-        .then((user) => {
-          obj.user = user.data();
-          return db.collection("tasks").doc(uid).get();
-        })
-        .then((tasks) => {
-          obj.tasks = tasks.data();
-          res.json(obj);
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(400).send("Error Fetching User");
-        });
+      obj.user = user.data();
+      return db.collection("tasks").doc(uid).get();
+    })
+    .then((tasks) => {
+      obj.tasks = tasks.data();
+      res.json(obj);
     })
     .catch((err) => {
       console.log(err);
-      res.status(400).send();
+      res.status(400).send("Error Fetching User");
     });
+  // })
+  // .catch((err) => {
+  //   console.log(err);
+  //   res.status(400).send();
+  // });
 };

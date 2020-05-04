@@ -13,19 +13,20 @@
     "chart.js": "^2.8.0",
     "clsx": "^1.0.4",
     "history": "^4.9.0",
+    "jwt-decode": "^2.2.0",
+    "moment": "^2.25.2",
     "node-sass": "^4.12.0",
     "prop-types": "^15.7.2",
-    "jwt-decode": "^2.2.0",
     "react": "^16.13.1",
+    "react-chartjs-2": "^2.7.6",
     "react-dom": "^16.13.1",
+    "react-perfect-scrollbar": "^1.5.3",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "recompose": "^0.30.0",
     "underscore": "^1.9.1",
     "uuid": "^3.3.2",
-    "validate.js": "^0.13.1",
-    "react-chartjs-2": "^2.7.6",
-    "react-perfect-scrollbar": "^1.5.3"
+    "validate.js": "^0.13.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -47,5 +48,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:5000/staff-management-753e4/asia-northeast1/api"
 }

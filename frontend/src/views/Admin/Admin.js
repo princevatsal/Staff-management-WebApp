@@ -3,24 +3,35 @@ import { makeStyles } from "@material-ui/styles";
 import { UserContext } from "../../context/userContext";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: theme.spacing(4),
-  },
-}));
+import { CircularProgress, withStyles } from "@material-ui/core";
+import { userReducer } from "context/reducers";
 
 const Admin = (props) => {
   const { history } = props;
+  const [loading, setLoading] = useState(true);
   const { userData, setGlobalUser } = useContext(UserContext);
   console.log(userData);
 
-  if (!userData.user.isAdmin) {
-    history.push("/");
+  if (!localStorage.token) {
+    history.push("/sign-in");
   }
 
-  const classes = useStyles();
-  return (
-    <div className={classes.root}>
+  const { checkUserData } = useContext(UserContext);
+  useEffect(() => {
+    checkUserData();
+    if (userData && userData.user.isAdmin) {
+      setLoading(false);
+    } else if (userData && !userData.user.isAdmin) {
+      history.push("/");
+    } else {
+      setLoading(true);
+    }
+  }, [userData]);
+
+  return loading ? (
+    <CircularProgress color="primary" />
+  ) : (
+    <div>
       <h1>Admin Page</h1>
     </div>
   );

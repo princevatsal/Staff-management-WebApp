@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { Grid } from "@material-ui/core";
 import {
@@ -11,8 +11,9 @@ import {
   LatestProducts,
   LatestOrders,
 } from "./components";
-import { UserContext } from "context/userContext";
 
+// Global User Context
+import { UserContext } from "context/userContext";
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
@@ -20,11 +21,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Dashboard = () => {
-  const { userData } = useContext(UserContext);
+  const { checkUserData } = useContext(UserContext);
   const classes = useStyles();
   useEffect(() => {
-    console.log(userData);
-  }, [userData]);
+    checkUserData();
+  }, []);
   return (
     <div className={classes.root}>
       <Grid container spacing={4}>
