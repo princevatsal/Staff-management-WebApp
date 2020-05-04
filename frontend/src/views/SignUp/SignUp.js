@@ -155,18 +155,21 @@ const SignUp = (props) => {
   });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      history.push("/");
-    }
-    const errors = validate(formState.values, schema);
+  useEffect(
+    (history) => {
+      if (localStorage.getItem("token")) {
+        history.push("/");
+      }
+      const errors = validate(formState.values, schema);
 
-    setFormState((formState) => ({
-      ...formState,
-      isValid: errors ? false : true,
-      errors: errors || {},
-    }));
-  }, [formState.values]);
+      setFormState((formState) => ({
+        ...formState,
+        isValid: errors ? false : true,
+        errors: errors || {},
+      }));
+    },
+    [formState.values]
+  );
 
   const handleChange = (event) => {
     event.persist();
@@ -206,8 +209,7 @@ const SignUp = (props) => {
     }
     axios({
       method: "post",
-      url:
-        "http://localhost:5000/staff-management-753e4/asia-northeast1/api/signup",
+      url: "/signup",
       data: {
         email: formState.values.email,
         password: formState.values.password,

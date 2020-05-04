@@ -1,30 +1,49 @@
 import React, { createContext, useReducer } from "react";
-import { SET_USER, UNSET_USER } from "./types";
+import {
+  SET_USER,
+  UNSET_USER,
+  SET_AUTHENTICATED,
+  SET_UNAUTHENTICATED,
+} from "./types";
 import { userReducer } from "./reducers";
-// Global User Context
-export const UserContext = createContext();
 
 const initialState = {
-  userData: null,
+  authenticated: false,
+  loading: false,
+  credentials: {},
 };
+
+// Global User Context
+export const UserContext = createContext();
 
 // Global User Provider
 export const UserProvider = ({ children }) => {
   const [state, dispatch] = useReducer(userReducer, initialState);
-  const setGlobalUser = (userData) => {
+
+  const setAuthenticated = () => {
+    dispatch({ type: SET_AUTHENTICATED });
+  };
+
+  const setUnauthenticated = () => {
+    dispatch({ type: SET_UNAUTHENTICATED });
+  };
+
+  const setUserCredentials = (userData) => {
     dispatch({ type: SET_USER, payload: userData });
   };
 
-  const unsetGlobalUser = () => {
+  const unsetUserCredentials = () => {
     dispatch({ type: UNSET_USER, payload: initialState });
   };
 
   return (
     <UserContext.Provider
       value={{
-        userData: state.userData,
-        setGlobalUser,
-        unsetGlobalUser,
+        user: state,
+        setAuthenticated,
+        setUnauthenticated,
+        setUserCredentials,
+        unsetUserCredentials,
       }}
     >
       {children}

@@ -5,6 +5,9 @@ import { Chart } from "react-chartjs-2";
 import { ThemeProvider } from "@material-ui/styles";
 import validate from "validate.js";
 
+import jwtDecode from "jwt-decode";
+import axios from "axios";
+
 import { chartjs } from "./helpers";
 import theme from "./theme";
 import "react-perfect-scrollbar/dist/css/styles.css";
@@ -23,16 +26,32 @@ validate.validators = {
   ...validators,
 };
 
+// Setting up User
+const token = localStorage.token;
+if (token) {
+  const decodedToken = jwtDecode(token);
+  if (decodedToken.exp * 1000 < Date.now()) {
+    // store.dispatch(logoutUser());
+    window.location.href = "/login";
+  } else {
+    // store.dispatch({ type: SET_AUTHENTICATED });
+    axios.defaults.headers.common["Authorization"] = token;
+    // store.dispatch(getUserData());
+  }
+}
+
 export default class App extends Component {
   render() {
+    console.log("user");
+
     return (
-      <UserProvider>
-        <ThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
+        <UserProvider>
           <Router history={browserHistory}>
             <Routes />
           </Router>
-        </ThemeProvider>
-      </UserProvider>
+        </UserProvider>
+      </ThemeProvider>
     );
   }
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Redirect } from "react-router-dom";
 
-import { RouteWithLayout } from "./components";
+import { RouteWithLayout, AuthRoute } from "./components";
 import { Main as MainLayout, Minimal as MinimalLayout } from "./layouts";
 
 import {
@@ -15,24 +15,17 @@ import {
   SignUp as SignUpView,
   SignIn as SignInView,
   NotFound as NotFoundView,
-  Loading,
 } from "./views";
 
 const Routes = () => {
   return (
     <Switch>
-      <Redirect exact from="/" to="/loading" />
+      <Redirect exact from="/" to="/sign-in" />
       <RouteWithLayout
         component={DashboardView}
         exact
         layout={MainLayout}
         path="/dashboard"
-      />
-      <RouteWithLayout
-        component={Loading}
-        exact
-        layout={Loading}
-        path="/loading"
       />
       <RouteWithLayout
         component={UserListView}
@@ -70,13 +63,13 @@ const Routes = () => {
         layout={MainLayout}
         path="/settings"
       />
-      <RouteWithLayout
+      <AuthRoute
         component={SignUpView}
         exact
         layout={MinimalLayout}
         path="/sign-up"
       />
-      <RouteWithLayout
+      <AuthRoute
         component={SignInView}
         exact
         layout={MinimalLayout}

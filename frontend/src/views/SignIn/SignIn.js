@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link as RouterLink, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import validate from "validate.js";
@@ -15,7 +15,9 @@ import {
 import axios from "axios";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-import { Facebook as FacebookIcon, Google as GoogleIcon } from "icons";
+// import { Facebook as FacebookIcon, Google as GoogleIcon } from "icons";
+
+import { UserContext } from "context/userContext";
 
 const schema = {
   email: {
@@ -132,6 +134,8 @@ const SignIn = (props) => {
 
   const classes = useStyles();
 
+  const { setAuthenticated, setUserCredentials } = useContext(UserContext);
+
   const [formState, setFormState] = useState({
     isValid: false,
     values: {},
@@ -141,9 +145,6 @@ const SignIn = (props) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      history.push("/");
-    }
     const errors = validate(formState.values, schema);
 
     setFormState((formState) => ({
@@ -176,23 +177,22 @@ const SignIn = (props) => {
     }));
   };
 
+  // Handles Sign In
   const handleSignIn = (event) => {
-    setLoading(true);
     event.preventDefault();
-    axios({
-      method: "post",
-      url:
-        "http://localhost:5000/staff-management-753e4/asia-northeast1/api/login",
-      data: {
-        email: formState.values.email,
-        password: formState.values.password,
-      },
-    })
-      .then((data) => {
+    setLoading(true);
+    const loginData = {
+      email: formState.values.email,
+      password: formState.values.password,
+    };
+    axios
+      .post("/login", loginData)
+      .then((res) => {
         setLoading(false);
-        console.log(data);
-        localStorage.setItem("token", data.data.token);
-        history.push("/");
+        console.log(res);
+        localStorage.setItem("token", res.data.token);
+        setAuthenticated();
+        history.push("/dashboard");
       })
       .catch((err) => {
         setLoading(false);
@@ -210,15 +210,14 @@ const SignIn = (props) => {
           <div className={classes.quote}>
             <div className={classes.quoteInner}>
               <Typography className={classes.quoteText} variant="h1">
-                Welcome to Scope Securities Management Website Please Login or
-                SignUp to continue
+                Scope Security Management System
               </Typography>
               <div className={classes.person}>
-                <Typography className={classes.name} variant="body1">
-                  Scope Securities
+                <Typography className={classes.name} variant="h3">
+                  Scope Security
                 </Typography>
-                <Typography className={classes.bio} variant="body2">
-                  Manager
+                <Typography className={classes.bio} variant="h4">
+                  A name you can trust
                 </Typography>
               </div>
             </div>
@@ -261,7 +260,7 @@ const SignIn = (props) => {
                       Login with Google
                     </Button>
                   </Grid>
-                </Grid> */}
+                </Grid> 
                 <Typography
                   align="center"
                   className={classes.sugestion}
@@ -269,7 +268,7 @@ const SignIn = (props) => {
                   variant="body1"
                 >
                   Enter Your email address and Password
-                </Typography>
+                </Typography> */}
                 <TextField
                   className={classes.textField}
                   error={hasError("email")}
@@ -307,7 +306,7 @@ const SignIn = (props) => {
                   type="submit"
                   variant="contained"
                 >
-                  {loading ? <CircularProgress color="white" /> : "SIGN IN NOW"}
+                  {loading ? <CircularProgress color="#fff" /> : "SIGN IN NOW"}
                 </Button>
                 <Typography color="textSecondary" variant="body1">
                   Don't have an account?{" "}
