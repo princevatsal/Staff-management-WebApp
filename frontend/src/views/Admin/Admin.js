@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../context/userContext";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
+import { CircularProgress, withStyles, TextField } from "@material-ui/core";
+import { userReducer } from "context/reducers";
 
 const Admin = (props) => {
   const { history } = props;
@@ -9,7 +11,7 @@ const Admin = (props) => {
   console.log(userData);
 
   if (!localStorage.token) {
-    history.push("/sign-in");
+    window.location.href = "/sign-in";
   }
 
   const { checkUserData } = useContext(UserContext);
@@ -19,6 +21,7 @@ const Admin = (props) => {
 
   return (
     <div>
+      <TextField id="outlined-basic" label="Outlined" variant="outlined" />
       <h1>Admin Page</h1>
     </div>
   );

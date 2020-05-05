@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Redirect } from "react-router-dom";
-
+import { CircularProgress } from "@material-ui/core";
 import { RouteWithLayout } from "./components";
 import { Main as MainLayout, Minimal as MinimalLayout } from "./layouts";
 
@@ -23,33 +23,52 @@ import { UserContext } from "context/userContext";
 
 const Routes = () => {
   const [adminState, setAdminState] = React.useState(false);
-
+  const [loading, setLoading] = React.useState(true);
   const { userData, setUserData } = React.useContext(UserContext);
-
+  const token = localStorage.token;
   React.useEffect(() => {
-    if (localStorage.token && !userData) {
+    if (token && !userData) {
       axios
         .get("/getUserInfoByToken")
         .then((res) => {
           setUserData(res.data);
           res.data.user.isAdmin && setAdminState(true);
+          setLoading(false);
         })
         .catch((err) => alert("Unable to fetch user err : ", err));
-    } else if (localStorage.token && userData) {
+    } else if (token && userData) {
       userData.isAdmin && setAdminState(true);
+    } else {
+      setLoading(false);
     }
   }, []);
 
-  return (
+  return loading ? (
+    <div
+      style={{
+        display: "flex",
+        height: "100vh",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <CircularProgress />
+    </div>
+  ) : (
     <Switch>
-      <Redirect exact from="/" to="/loading" />
-      <RouteWithLayout
-        component={Loading}
-        exact
-        layout={Loading}
-        path="/loading"
-      />
-      {!adminState && (
+      {token ? (
+        <Redirect exact from="/" to={adminState ? "/admin" : "/dashboard"} />
+      ) : (
+        <Redirect exact from="/" to="/sign-in" />
+      )}
+      {adminState ? (
+        <RouteWithLayout
+          component={Admin}
+          exact
+          layout={MainLayout}
+          path="/admin"
+        />
+      ) : (
         <RouteWithLayout
           component={DashboardView}
           exact
@@ -87,14 +106,6 @@ const Routes = () => {
         layout={MainLayout}
         path="/account"
       />
-      {adminState && (
-        <RouteWithLayout
-          component={Admin}
-          exact
-          layout={MainLayout}
-          path="/admin"
-        />
-      )}
       <RouteWithLayout
         component={SettingsView}
         exact

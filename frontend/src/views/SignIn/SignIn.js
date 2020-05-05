@@ -191,11 +191,10 @@ const SignIn = (props) => {
       .then((res) => {
         setLoading(false);
         localStorage.setItem("token", res.data.token);
-        history.push("/");
+        window.location.href = "/";
       })
       .catch((err) => {
         setLoading(false);
-        alert(err.response.data.general);
       });
   };
 

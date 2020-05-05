@@ -146,7 +146,7 @@ const SignUp = (props) => {
   const { history } = props;
 
   if (localStorage.getItem("token")) {
-    history.push("/");
+    window.location.href = "/";
   }
 
   const classes = useStyles();
@@ -218,7 +218,7 @@ const SignUp = (props) => {
         setLoading(false);
         console.log(data);
         localStorage.setItem("token", data.data.token);
-        history.push("/");
+        window.location.href = "/";
       })
       .catch((err) => {
         setLoading(false);

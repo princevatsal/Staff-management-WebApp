@@ -1,6 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
-import { Grid } from "@material-ui/core";
+import { Grid, CircularProgress } from "@material-ui/core";
+import PropTypes from "prop-types";
 import {
   Budget,
   TotalUsers,
@@ -11,6 +12,7 @@ import {
   LatestProducts,
   LatestOrders,
 } from "./components";
+import { withRouter } from "react-router-dom";
 
 // Global User Context
 import { UserContext } from "context/userContext";
@@ -21,16 +23,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Dashboard = () => {
-  const { checkUserData } = useContext(UserContext);
+const Dashboard = (props) => {
+  const { checkUserData, userData } = useContext(UserContext);
   const classes = useStyles();
+  const [loading, setLoading] = useState(true);
+  const { history } = props;
+
+  if (!localStorage.token) window.location.href = "/";
   useEffect(() => {
     checkUserData();
-  }, []);
-  return (
+    if (userData && userData.user.credentials.name) {
+      setLoading(false);
+    } else if (userData && !userData.user.credentials.name) {
+      window.location.href = "/";
+    } else {
+      setLoading(true);
+    }
+  }, [userData]);
+  return loading ? (
+    <div>
+      <CircularProgress />
+    </div>
+  ) : (
     <div className={classes.root}>
       <Grid container spacing={4}>
-        <Grid item lg={3} sm={6} xl={3} xs={12}>
+        {/* <Grid item lg={3} sm={6} xl={3} xs={12}>
           <Budget />
         </Grid>
         <Grid item lg={3} sm={6} xl={3} xs={12}>
@@ -38,25 +55,28 @@ const Dashboard = () => {
         </Grid>
         <Grid item lg={3} sm={6} xl={3} xs={12}>
           <TasksProgress />
-        </Grid>
-        <Grid item lg={3} sm={6} xl={3} xs={12}>
+        </Grid> */}
+        {/* <Grid item lg={3} sm={6} xl={3} xs={12}>
           <TotalProfit />
-        </Grid>
-        <Grid item lg={8} md={12} xl={9} xs={12}>
-          <LatestSales />
-        </Grid>
+        </Grid> */}
         <Grid item lg={4} md={6} xl={3} xs={12}>
           <UsersByDevice />
-        </Grid>
-        <Grid item lg={4} md={6} xl={3} xs={12}>
-          <LatestProducts />
         </Grid>
         <Grid item lg={8} md={12} xl={9} xs={12}>
           <LatestOrders />
         </Grid>
+        {/* <Grid item lg={4} md={6} xl={3} xs={12}>
+          <LatestProducts />
+        </Grid>
+        <Grid item lg={8} md={12} xl={9} xs={12}>
+          <LatestSales />
+        </Grid> */}
       </Grid>
     </div>
   );
 };
 
-export default Dashboard;
+Dashboard.propTypes = {
+  history: PropTypes.object,
+};
+export default withRouter(Dashboard);
