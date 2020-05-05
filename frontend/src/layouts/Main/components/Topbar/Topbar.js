@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
   signOutButton: {
     marginLeft: theme.spacing(1),
   },
+  txt: {
+    color: "#fff",
+  },
 }));
 
 const Topbar = (props) => {
@@ -39,7 +42,9 @@ const Topbar = (props) => {
     <AppBar {...rest} className={clsx(classes.root, className)}>
       <Toolbar>
         <RouterLink to="/">
-          <Typography variant="h3">Scope Security</Typography>
+          <Typography variant="h3" className={clsx(classes.txt, className)}>
+            Scope Security
+          </Typography>
         </RouterLink>
         <div className={classes.flexGrow} />
         <Hidden mdDown>

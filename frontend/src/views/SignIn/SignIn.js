@@ -193,7 +193,7 @@ const SignIn = (props) => {
         console.log(res);
         localStorage.setItem("token", res.data.token);
 
-        history.push("/dashboard");
+        history.push("/");
       })
       .catch((err) => {
         setLoading(false);

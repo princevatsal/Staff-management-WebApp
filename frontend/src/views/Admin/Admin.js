@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import { UserContext } from "../../context/userContext";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { CircularProgress, withStyles } from "@material-ui/core";
+import { CircularProgress, withStyles, TextField } from "@material-ui/core";
 import { userReducer } from "context/reducers";
 
 const Admin = (props) => {
@@ -32,6 +32,7 @@ const Admin = (props) => {
     <CircularProgress color="primary" />
   ) : (
     <div>
+      <TextField id="outlined-basic" label="Outlined" variant="outlined" />
       <h1>Admin Page</h1>
     </div>
   );

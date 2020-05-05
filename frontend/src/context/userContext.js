@@ -1,9 +1,10 @@
 import React, { createContext, useReducer } from "react";
-import { SET_USER, UNSET_USER } from "./types";
+import { SET_USER, UNSET_USER, SET_DATE } from "./types";
 import { userReducer } from "./reducers";
 import axios from "axios";
 const initialState = {
   userData: null,
+  dates: { date: new Date(), show: "Today" },
 };
 
 // Global User Context
@@ -18,9 +19,12 @@ export const UserProvider = ({ children }) => {
   };
 
   const unsetUserData = () => {
-    dispatch({ type: UNSET_USER, payload: initialState });
+    dispatch({ type: UNSET_USER });
   };
 
+  const setDate = (date) => {
+    dispatch({ type: SET_DATE, payload: date });
+  };
   const checkUserData = () => {
     if (localStorage.token && !state.userData) {
       axios.get("/getUserInfoByToken").then((data) => {
@@ -33,9 +37,11 @@ export const UserProvider = ({ children }) => {
     <UserContext.Provider
       value={{
         userData: state.userData,
+        dates: state.dates,
         setUserData,
         unsetUserData,
         checkUserData,
+        setDate,
       }}
     >
       {children}
