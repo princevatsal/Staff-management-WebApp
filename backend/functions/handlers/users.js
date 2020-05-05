@@ -102,6 +102,20 @@ exports.login = (req, res) => {
     });
 };
 
+// UPDATE USER LOCATION
+exports.updateUserLocation = (req, res) => {
+  const uid = req.user.uid;
+  const geo = req.body.geo;
+  const timestamp = req.body.timestamp;
+  console.log(uid, geo, timestamp);
+
+  db.collection("user-activity")
+    .doc(uid)
+    .set({ [timestamp]: { geo } }, { merge: true })
+    .then(() => res.json({ message: "Location Updated Successfully" }))
+    .catch((err) => res.status(500).json({ message: err }));
+};
+
 // GET USER INFO
 exports.getUserInfo = (req, res) => {
   const uid = req.query.uid;
@@ -124,11 +138,6 @@ exports.getUserInfo = (req, res) => {
 };
 
 exports.getUserInfoByToken = (req, res) => {
-  console.log("see middleware:-", req.user);
-  // admin
-  //   .auth()
-  //   .verifyIdToken(req.query.token)
-  //   .then((user) => {
   const uid = req.user.uid;
   var obj = {};
   db.collection("users")
@@ -146,11 +155,6 @@ exports.getUserInfoByToken = (req, res) => {
       console.log(err);
       res.status(400).send("Error Fetching User");
     });
-  // })
-  // .catch((err) => {
-  //   console.log(err);
-  //   res.status(400).send();
-  // });
 };
 exports.getAllUsers = (req, res) => {
   db.collection("users")
