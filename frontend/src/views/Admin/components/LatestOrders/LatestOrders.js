@@ -9,21 +9,25 @@ import {
   CardActions,
   CardHeader,
   CardContent,
-  Button,
   Divider,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Tooltip,
-  TableSortLabel,
+  Input,
 } from "@material-ui/core";
-import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import Button from "@material-ui/core/Button";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  KeyboardTimePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
 import { UserContext } from "context/userContext";
 import mockData from "./data";
-import { StatusBullet } from "components";
-
+import axios from "axios";
 const useStyles = makeStyles((theme) => ({
   root: {},
   content: {
@@ -75,14 +79,20 @@ const filterTask = (tasklist, finaldate) =>
     let date = new Date(task.start._seconds * 1000).toLocaleDateString();
     if (today === date) return true;
   });
-
+const initInfo = {
+  start: new Date(),
+  end: new Date(),
+  details: "",
+};
 const LatestOrders = (props) => {
   const { className, user, ...rest } = props;
   const classes = useStyles();
   const [orders] = useState(mockData);
   const { dates, userData } = useContext(UserContext);
   const [tasks, setTasks] = useState([]);
-
+  const [model, setModel] = useState(false);
+  const [info, setInfo] = useState(initInfo);
+  const [refresh, setRefresh] = useState(false);
   useEffect(() => {
     let tasklist = user ? user.tasks.taskList : userData.tasks.taskList;
     var filteredTasks = filterTask(tasklist, dates.date);
@@ -93,15 +103,124 @@ const LatestOrders = (props) => {
         return { time: StartTime + "--" + EndTime, details: task.details };
       })
     );
-  }, [dates, user]);
+    //
+    let localtime = new Date();
+    localtime.setDate(dates.date.getDate());
+    localtime.setMonth(dates.date.getMonth());
+    localtime.setFullYear(dates.date.getFullYear());
+    setInfo({ start: localtime, end: localtime, details: "" });
+    //
+  }, [dates, user, refresh]);
 
   return (
-    <Card {...rest} className={clsx(classes.root, className)}>
+    <Card>
+      <Dialog aria-labelledby="simple-dialog-title" open={model}>
+        <DialogTitle id="simple-dialog-title">Add New Task </DialogTitle>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <div style={{ padding: "20px" }}>
+            <KeyboardTimePicker
+              margin="normal"
+              id="time-picker"
+              label="Choose Start Time"
+              value={info.start}
+              onChange={(e) => {
+                let localtime = new Date(e);
+                localtime.setDate(dates.date.getDate());
+                localtime.setMonth(dates.date.getMonth());
+                localtime.setFullYear(dates.date.getFullYear());
+                console.log("Seee it : ", localtime);
+                setInfo({ ...info, start: localtime });
+              }}
+              KeyboardButtonProps={{
+                "aria-label": "change time",
+              }}
+            />
+            <KeyboardTimePicker
+              margin="normal"
+              id="time-picker"
+              label="Choose End Time"
+              value={info.end}
+              onChange={(e) => {
+                let localtime = new Date(e);
+                localtime.setDate(dates.date.getDate());
+                localtime.setMonth(dates.date.getMonth());
+                localtime.setFullYear(dates.date.getFullYear());
+                console.log("Seee it : ", localtime);
+                setInfo({ ...info, end: localtime });
+              }}
+              KeyboardButtonProps={{
+                "aria-label": "change time",
+              }}
+            />
+          </div>
+          <div style={{ padding: "20px" }}>
+            <Input
+              placeholder="Enter Task Details"
+              value={info.details}
+              onChange={(e) => setInfo({ ...info, details: e.target.value })}
+            />
+          </div>
+          <div style={{ padding: "20px" }}>
+            <Button
+              styles={styles.addbtn}
+              onClick={() => {
+                setModel(false);
+                console.log(info, user.user);
+                axios({
+                  method: "post",
+                  url: "/addtask",
+                  data: {
+                    task: info,
+                    uid: user.user.credentials.uid,
+                    old: user.tasks.taskList,
+                  },
+                })
+                  .then((data) => {
+                    console.log(data.data);
+                    user.tasks.taskList.push(data.data);
+                    console.log(user);
+                    setRefresh(!refresh);
+                  })
+                  .catch((err) => console.log(err));
+                console.log(user.tasks.taskList);
+              }}
+            >
+              Add
+            </Button>
+            <Button
+              styles={styles.addbtn}
+              onClick={() => {
+                setModel(false);
+                setInfo(initInfo);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </MuiPickersUtilsProvider>
+      </Dialog>
       <CardHeader
-        title="Latest Tasks"
+        title="Latest Tasks "
         action={
-          <div style={{ paddingRight: "20px", paddingTop: "10px" }}>
-            <h3 style={{ fontFamily: "sans-serif" }}>{dates.show}</h3>
+          <div style={{ display: "flex" }}>
+            <div
+              style={{
+                paddingRight: "20px",
+                paddingTop: "10px",
+              }}
+            >
+              <h3 style={{ fontFamily: "sans-serif" }}>{dates.show}</h3>
+            </div>
+            <Button
+              variant="contained"
+              color="primary"
+              href="#contained-buttons"
+              onClick={() => {
+                setModel(true);
+              }}
+            >
+              Add New
+            </Button>
           </div>
         }
       />
@@ -134,7 +253,16 @@ const LatestOrders = (props) => {
     </Card>
   );
 };
-
+const styles = {
+  addbtn: {
+    border: 0,
+    background: "#fff",
+    padding: "20px",
+    fontFamily: "sans-serif",
+  },
+  details: {},
+  addbtn: {},
+};
 LatestOrders.propTypes = {
   className: PropTypes.string,
 };

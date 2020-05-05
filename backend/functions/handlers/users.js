@@ -1,6 +1,5 @@
 const firebase = require("firebase");
 const { admin, db } = require("../utils/admin");
-
 // INITIALIZE FIREBASE CLIENT
 const config = require("../utils/config");
 firebase.initializeApp(config);
@@ -157,4 +156,35 @@ exports.getAllUsers = (req, res) => {
     .get()
     .then((data) => res.json(data.docs.map((data) => data.data())))
     .catch((err) => res.status(404).send(err));
+};
+
+exports.addTask = (req, res) => {
+  const info = req.body.task;
+  const uid = req.body.uid;
+  const old = req.body.old;
+
+  info.start = new Date(info.start);
+  info.end = new Date(info.end);
+
+  console.log(uid, info, old);
+
+  const newTask = {
+    start: {
+      _seconds: firebase.firestore.Timestamp.fromDate(info.start).seconds,
+      _nanoseconds: firebase.firestore.Timestamp.fromDate(info.start)
+        .nanoseconds,
+    },
+    end: {
+      _seconds: firebase.firestore.Timestamp.fromDate(info.end).seconds,
+      _nanoseconds: firebase.firestore.Timestamp.fromDate(info.end).nanoseconds,
+    },
+    details: info.details,
+  };
+  console.log("newTask:-", newTask);
+  old.push(newTask);
+  db.collection("tasks")
+    .doc(uid)
+    .set({ taskList: old })
+    .then(() => res.json(newTask))
+    .catch(() => res.send(400));
 };
