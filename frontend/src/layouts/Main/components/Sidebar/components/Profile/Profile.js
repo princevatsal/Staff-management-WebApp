@@ -1,62 +1,61 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/styles';
-import { Avatar, Typography } from '@material-ui/core';
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
+import clsx from "clsx";
+import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/styles";
+import { Avatar, Typography } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
+// Global User Context
+import { UserContext } from "context/userContext";
+
+const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    minHeight: 'fit-content'
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    minHeight: "fit-content",
   },
   avatar: {
     width: 60,
-    height: 60
+    height: 60,
   },
   name: {
-    marginTop: theme.spacing(1)
-  }
+    marginTop: theme.spacing(1),
+  },
 }));
 
-const Profile = props => {
+const Profile = (props) => {
   const { className, ...rest } = props;
+
+  const { userData } = React.useContext(UserContext);
 
   const classes = useStyles();
 
   const user = {
-    name: 'Shen Zhi',
-    avatar: '/images/avatars/avatar_11.png',
-    bio: 'Brain Director'
+    name: userData.user.credentials.name,
+    avatar: userData.user.credentials.imageUrl,
+    dlNo: userData.user.credentials.drivingLicenceNo,
   };
 
   return (
-    <div
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
+    <div {...rest} className={clsx(classes.root, className)}>
       <Avatar
         alt="Person"
         className={classes.avatar}
         component={RouterLink}
         src={user.avatar}
-        to="/settings"
+        to="/account"
       />
-      <Typography
-        className={classes.name}
-        variant="h4"
-      >
+      <Typography className={classes.name} variant="h4">
         {user.name}
       </Typography>
-      <Typography variant="body2">{user.bio}</Typography>
+      <Typography variant="body2">{user.dlNo}</Typography>
     </div>
   );
 };
 
 Profile.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
 };
 
 export default Profile;

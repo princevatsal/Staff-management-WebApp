@@ -20,13 +20,19 @@ const Footer = (props) => {
       <Typography variant="body1">
         &copy;{" "}
         <Link component="a" href="#" target="_blank">
-          Devias IO
+          Scope Security{" "}
         </Link>
-        . 2019
+        {new Date().getFullYear()}
       </Typography>
       <Typography variant="caption">
-        Created with love for the environment. By designers and developers who
-        love to work together in offices!
+        Created with ❤ by{" "}
+        <Link
+          href="https://pricevatsal.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          creativeCoders
+        </Link>
       </Typography>
     </div>
   );
