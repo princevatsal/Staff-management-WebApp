@@ -25,6 +25,7 @@ const Routes = () => {
   const [adminState, setAdminState] = React.useState(false);
 
   const { userData, setUserData } = React.useContext(UserContext);
+
   React.useEffect(() => {
     if (localStorage.token && !userData) {
       axios
