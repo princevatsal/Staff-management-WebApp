@@ -190,14 +190,11 @@ const SignIn = (props) => {
       .post("/login", loginData)
       .then((res) => {
         setLoading(false);
-        console.log(res);
         localStorage.setItem("token", res.data.token);
-
-        history.push("/");
+        window.location.href = "/";
       })
       .catch((err) => {
         setLoading(false);
-        alert(err.response.data.general);
       });
   };
 
@@ -307,7 +304,11 @@ const SignIn = (props) => {
                   type="submit"
                   variant="contained"
                 >
-                  {loading ? <CircularProgress color="#fff" /> : "SIGN IN NOW"}
+                  {loading ? (
+                    <CircularProgress color="#fff" size={16} />
+                  ) : (
+                    "SIGN IN NOW"
+                  )}
                 </Button>
                 <Typography color="textSecondary" variant="body1">
                   Don't have an account?{" "}

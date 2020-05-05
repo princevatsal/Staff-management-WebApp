@@ -16,6 +16,7 @@ import { withRouter } from "react-router-dom";
 
 // Global User Context
 import { UserContext } from "context/userContext";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
@@ -27,12 +28,14 @@ const Dashboard = (props) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(true);
   const { history } = props;
+
+  if (!localStorage.token) window.location.href = "/";
   useEffect(() => {
     checkUserData();
     if (userData && userData.user.credentials.name) {
       setLoading(false);
     } else if (userData && !userData.user.credentials.name) {
-      history.push("/");
+      window.location.href = "/";
     } else {
       setLoading(true);
     }
