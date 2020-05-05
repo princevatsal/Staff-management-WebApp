@@ -305,7 +305,7 @@ const SignIn = (props) => {
                   variant="contained"
                 >
                   {loading ? (
-                    <CircularProgress color="#fff" size={16} />
+                    <CircularProgress color="#fff" size={24} />
                   ) : (
                     "SIGN IN NOW"
                   )}

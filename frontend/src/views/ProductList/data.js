@@ -1,58 +1,53 @@
-import uuid from 'uuid/v1';
+import uuid from "uuid/v1";
 
 export default [
   {
     id: uuid(),
-    title: 'Dropbox',
+    title: "Cyber Security",
     description:
-      'Dropbox is a file hosting service that offers cloud storage, file synchronization, a personal cloud.',
-    imageUrl: '/images/products/product_1.png',
-    totalDownloads: '594',
-    updatedAt: '27/03/2019'
+      "Our Cyber Security team having a vast experience in real world projects back your organization .Tap into that expertise on demand to support your projects or as you implement technical controls.",
+    imageUrl: "/images/products/drone.jpg",
   },
   {
     id: uuid(),
-    title: 'Medium Corporation',
+    title: "Data Protection",
     description:
-      'Medium is an online publishing platform developed by Evan Williams, and launched in August 2012.',
-    imageUrl: '/images/products/product_2.png',
-    totalDownloads: '625',
-    createdAt: '31/03/2019'
+      "In this digital world where data is one of most private and powerful asset we provide services to protect it with our security experts",
+    imageUrl: "/images/products/data.jpg",
   },
   {
     id: uuid(),
-    title: 'Slack',
+    title: "iCloud Storage",
     description:
-      'Slack is a cloud-based set of team collaboration tools and services, founded by Stewart Butterfield.',
-    imageUrl: '/images/products/product_3.png',
-    totalDownloads: '857',
-    createdAt: '03/04/2019'
+      "Beyond simple data syncing, iCloud is used for storage, similar to DropBox or Microsoft's OneDrive. You can upload, share and store documents and data and then access the docs and data from any computer with a web browser.",
+    imageUrl: "/images/products/icloud.jpg",
   },
   {
     id: uuid(),
-    title: 'Lyft',
+    title: "Drone Security",
     description:
-      'Lyft is an on-demand transportation company based in San Francisco, California.',
-    imageUrl: '/images/products/product_4.png',
-    totalDownloads: '406',
-    createdAt: '04/04/2019'
+      "Security operations are simplified with pre-defined missions, and emergency response is enhanced through on-demand availability. The completely automatic platform autonomously deploys and lands the drone, and collects aerial data to be processed and analyzed.",
+    imageUrl: "/images/products/drone.jpg",
   },
   {
     id: uuid(),
-    title: 'GitHub',
+    title: "Asset Security",
     description:
-      'GitHub is a web-based hosting service for version control of code using Git.',
-    imageUrl: '/images/products/product_5.png',
-    totalDownloads: '835',
-    createdAt: '04/04/2019'
+      "Asset security includes the concepts, structures, principles, and standards aimed at monitoring and securing assets, and those controls that enforce several levels of confidentiality, availability, and integrity.",
+    imageUrl: "/images/products/asset.jpg",
   },
   {
     id: uuid(),
-    title: 'Squarespace',
+    title: "Security Officer",
     description:
-      'Squarespace provides software as a service for website building and hosting. Headquartered in NYC.',
-    imageUrl: '/images/products/product_6.png',
-    totalDownloads: '835',
-    createdAt: '04/04/2019'
-  }
+      "We have a number of well trained and experienced security Officers for any purpose or any event",
+    imageUrl: "/images/products/sec.jpg",
+  },
+  {
+    id: uuid(),
+    title: "CCTV Camera Installation",
+    description:
+      "We have best cctv camera installers working with us they a quite a huge experience with upto date cameras and their installation",
+    imageUrl: "/images/products/camera.jpg",
+  },
 ];
