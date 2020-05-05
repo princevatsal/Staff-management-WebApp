@@ -17,6 +17,7 @@ const {
   login,
   getUserInfo,
   getUserInfoByToken,
+  getAllUsers,
 } = require("./handlers/users");
 
 // Auth Routes
@@ -24,5 +25,6 @@ app.post("/signup", signup);
 app.post("/login", login);
 app.get("/getUserInfo", getUserInfo);
 app.get("/getUserInfoByToken", MiddleWare, getUserInfoByToken);
+app.get("/getallusers", getAllUsers);
 // API FORMAT : https://baseurl.com/api/
 exports.api = functions.region("asia-northeast1").https.onRequest(app);

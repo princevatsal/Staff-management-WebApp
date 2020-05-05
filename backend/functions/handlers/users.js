@@ -152,3 +152,9 @@ exports.getUserInfoByToken = (req, res) => {
   //   res.status(400).send();
   // });
 };
+exports.getAllUsers = (req, res) => {
+  db.collection("users")
+    .get()
+    .then((data) => res.json(data.docs.map((data) => data.data())))
+    .catch((err) => res.status(404).send(err));
+};
