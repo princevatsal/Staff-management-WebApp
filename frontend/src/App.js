@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Router } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { Chart } from "react-chartjs-2";
@@ -14,9 +14,9 @@ import "react-perfect-scrollbar/dist/css/styles.css";
 import "./assets/scss/index.scss";
 import validators from "./common/validators";
 import Routes from "./Routes";
-import { UserProvider } from "./context/userContext";
 
-import { UserContext } from "context/userContext";
+// Global User Provider
+import { UserProvider } from "./context/userContext";
 
 const browserHistory = createBrowserHistory();
 
@@ -35,14 +35,15 @@ if (token) {
   const decodedToken = jwtDecode(token);
   if (decodedToken.exp * 1000 < Date.now()) {
     // store.dispatch(logoutUser());
-    window.location.href = "/login";
     localStorage.removeItem("token");
+    window.location.href = "/sign-in";
   } else {
     // store.dispatch({ type: SET_AUTHENTICATED });
     axios.defaults.headers.common["Authorization"] = "Bearer " + token;
     // store.dispatch(getUserData());
   }
 }
+
 const App = () => {
   return (
     <ThemeProvider theme={theme}>

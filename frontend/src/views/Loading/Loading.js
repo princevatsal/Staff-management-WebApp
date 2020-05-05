@@ -1,40 +1,42 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { CircularProgress, withStyles } from "@material-ui/core";
 import { UserContext } from "../../context/userContext";
 import axios from "axios";
 
-const ColorCircularProgress = withStyles({
-  root: {
-    color: "white",
-  },
-})(CircularProgress);
-
 const Loading = (props) => {
   const { userData, setUserData } = useContext(UserContext);
   const { history } = props;
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
+    if (!localStorage.token) {
       history.push("/sign-in");
       return;
     }
-    axios
-      .get("/getUserInfoByToken")
-      .then((data) => {
-        setUserData(data.data);
-        if (data.data.user.isAdmin) history.push("/admin");
-        else history.push("/dashboard");
-      })
-      .catch((err) => alert("unable to fetch user"));
+    if (localStorage.token && !userData) {
+      axios
+        .get("/getUserInfoByToken")
+        .then((res) => {
+          setUserData(res.data);
+          console.log(res);
+          if (res.data.user.isAdmin) history.push("/admin");
+          else history.push("/dashboard");
+        })
+        .catch((err) => alert("unable to fetch user"));
+      return;
+    }
+    if (userData.isAdmin) history.push("/admin");
+    else history.push("/dashboard");
   }, []);
+
   return (
     <div style={styles.container}>
-      <ColorCircularProgress />
+      <CircularProgress />
     </div>
   );
 };
+
 const styles = {
   container: {
     height: "100vh",
@@ -44,7 +46,9 @@ const styles = {
     alignItems: "center",
   },
 };
+
 Loading.propTypes = {
   history: PropTypes.object,
 };
+
 export default withRouter(Loading);

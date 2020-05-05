@@ -1,14 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { makeStyles } from "@material-ui/styles";
 import { UserContext } from "../../context/userContext";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { CircularProgress, withStyles } from "@material-ui/core";
-import { userReducer } from "context/reducers";
 
 const Admin = (props) => {
   const { history } = props;
-  const [loading, setLoading] = useState(true);
   const { userData, setGlobalUser } = useContext(UserContext);
   console.log(userData);
 
@@ -19,24 +15,17 @@ const Admin = (props) => {
   const { checkUserData } = useContext(UserContext);
   useEffect(() => {
     checkUserData();
-    if (userData && userData.user.isAdmin) {
-      setLoading(false);
-    } else if (userData && !userData.user.isAdmin) {
-      history.push("/");
-    } else {
-      setLoading(true);
-    }
   }, [userData]);
 
-  return loading ? (
-    <CircularProgress color="primary" />
-  ) : (
+  return (
     <div>
       <h1>Admin Page</h1>
     </div>
   );
 };
+
 Admin.propTypes = {
   history: PropTypes.object,
 };
+
 export default withRouter(Admin);

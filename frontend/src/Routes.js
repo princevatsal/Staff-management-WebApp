@@ -24,44 +24,43 @@ import { UserContext } from "context/userContext";
 const Routes = () => {
   const [adminState, setAdminState] = React.useState(false);
 
-  const { setUserData } = React.useContext(UserContext);
-
+  const { userData, setUserData } = React.useContext(UserContext);
   React.useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      return;
+    if (localStorage.token && !userData) {
+      axios
+        .get("/getUserInfoByToken")
+        .then((res) => {
+          setUserData(res.data);
+          res.data.user.isAdmin && setAdminState(true);
+        })
+        .catch((err) => alert("Unable to fetch user err : ", err));
+    } else if (localStorage.token && userData) {
+      userData.isAdmin && setAdminState(true);
     }
-
-    axios
-      .get("/getUserInfoByToken")
-      .then((data) => {
-        setUserData(data.data);
-        if (data.data.user.isAdmin) {
-          setAdminState(true);
-        }
-      })
-      .catch((err) => alert("unable to fetch user"));
   }, []);
 
   return (
     <Switch>
       <Redirect exact from="/" to="/loading" />
       <RouteWithLayout
-        component={DashboardView}
+        component={Loading}
         exact
-        layout={MainLayout}
-        path="/dashboard"
+        layout={Loading}
+        path="/loading"
       />
+      {!adminState && (
+        <RouteWithLayout
+          component={DashboardView}
+          exact
+          layout={MainLayout}
+          path="/dashboard"
+        />
+      )}
       <RouteWithLayout
         component={UserListView}
         exact
         layout={MainLayout}
         path="/users"
-      />
-      <RouteWithLayout
-        component={Loading}
-        exact
-        layout={Loading}
-        path="/loading"
       />
       <RouteWithLayout
         component={ProductListView}

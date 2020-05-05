@@ -14,6 +14,7 @@ import {
 
 // Global User Context
 import { UserContext } from "context/userContext";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(4),
