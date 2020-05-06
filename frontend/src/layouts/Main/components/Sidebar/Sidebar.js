@@ -8,7 +8,10 @@ import PeopleIcon from "@material-ui/icons/People";
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 
-import { Profile, SidebarNav, UpgradePlan } from "./components";
+import { Profile, SidebarNav } from "./components";
+
+// Global User Context
+import { UserContext } from "context/userContext";
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -41,14 +44,22 @@ const useStyles = makeStyles((theme) => ({
 const Sidebar = (props) => {
   const { open, variant, onClose, className, ...rest } = props;
 
+  const { userData } = React.useContext(UserContext);
+
   const classes = useStyles();
 
   const pages = [
-    {
-      title: "Dashboard",
-      href: "/dashboard",
-      icon: <DashboardIcon />,
-    },
+    userData.user.isAdmin
+      ? {
+          title: "Admin",
+          href: "/admin",
+          icon: <DashboardIcon />,
+        }
+      : {
+          title: "Tasks",
+          href: "/dashboard",
+          icon: <DashboardIcon />,
+        },
     {
       title: "Users",
       href: "/users",

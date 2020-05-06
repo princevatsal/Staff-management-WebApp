@@ -130,10 +130,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignIn = (props) => {
-  const { history } = props;
-  if (localStorage.getItem("token")) {
-    history.push("/");
+  if (localStorage.token) {
+    window.location.href = "/";
   }
+
+  const { history } = props;
 
   const classes = useStyles();
 
@@ -155,9 +156,9 @@ const SignIn = (props) => {
     }));
   }, [formState.values]);
 
-  const handleBack = () => {
-    history.goBack();
-  };
+  // const handleBack = () => {
+  //   history.goBack();
+  // };
 
   const handleChange = (event) => {
     event.persist();
@@ -178,6 +179,9 @@ const SignIn = (props) => {
     }));
   };
 
+  const hasError = (field) =>
+    formState.touched[field] && formState.errors[field] ? true : false;
+
   // Handles Sign In
   const handleSignIn = (event) => {
     event.preventDefault();
@@ -191,15 +195,51 @@ const SignIn = (props) => {
       .then((res) => {
         setLoading(false);
         localStorage.setItem("token", res.data.token);
-        window.location.href = "/";
+        axios.defaults.headers.common["Authorization"] =
+          "Bearer " + res.data.token;
+      })
+      .then(() => {
+        handleLocationUpdate();
       })
       .catch((err) => {
         setLoading(false);
       });
   };
 
-  const hasError = (field) =>
-    formState.touched[field] && formState.errors[field] ? true : false;
+  // Handles Location Updates
+  const handleLocationUpdate = () => {
+    if (!"geolocation" in navigator) {
+      alert("Geolocation Feature Is Not Available In This Device");
+      window.location.href("/");
+      return;
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const geoData = {
+            timestamp: pos.timestamp,
+            geo: {
+              lat: pos.coords.latitude,
+              long: pos.coords.longitude,
+            },
+          };
+          axios
+            .post("/updateUserLocation", geoData)
+            .then((res) => {
+              console.log(res);
+              window.location.href = "/";
+            })
+            .catch((err) => {
+              console.log("Error Updating Location");
+              window.location.href = "/";
+            });
+        },
+        (err) => {
+          alert("Location Permission Denied");
+          console.log(err);
+        }
+      );
+    }
+  };
 
   return (
     <div className={classes.root}>
@@ -224,7 +264,7 @@ const SignIn = (props) => {
         <Grid className={classes.content} item lg={7} xs={12}>
           <div className={classes.content}>
             <div className={classes.contentHeader}>
-              <IconButton onClick={handleBack}>
+              <IconButton onClick={() => console.log("Back Pressed")}>
                 <ArrowBackIcon />
               </IconButton>
             </div>
@@ -305,7 +345,7 @@ const SignIn = (props) => {
                   variant="contained"
                 >
                   {loading ? (
-                    <CircularProgress color="#fff" size={24} />
+                    <CircularProgress color="#fff" size={25} />
                   ) : (
                     "SIGN IN NOW"
                   )}
