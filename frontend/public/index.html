@@ -13,10 +13,29 @@
       href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto+Slab|Roboto:300,400,500,700"
       rel="stylesheet"
     />
-    <title>React Material Dashboard</title>
+    <title>Scope Security</title>
+    <style>
+      .initialLoader {
+        /* border: 16px solid #f3f3f3; */
+        border-top: 16px solid #3498db;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spinInitialLoader 2s linear infinite;
+      }
+
+      @keyframes spinInitialLoader {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript><div class="initialLoader"></div></noscript>
     <div id="root"></div>
   </body>
 </html>

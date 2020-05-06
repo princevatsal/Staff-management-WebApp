@@ -23,9 +23,9 @@ const useStyles = makeStyles((theme) => ({
   flexGrow: {
     flexGrow: 1,
   },
-  signOutButton: {
-    marginLeft: theme.spacing(1),
-  },
+  // signOutButton: {
+  //   marginLeft: theme.spacing(1),
+  // },
   txt: {
     color: "#fff",
   },
@@ -57,9 +57,9 @@ const Topbar = (props) => {
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <IconButton className={classes.signOutButton} color="inherit">
+          {/* <IconButton className={classes.signOutButton} color="inherit">
             <InputIcon />
-          </IconButton>
+          </IconButton> */}
         </Hidden>
         <Hidden lgUp>
           <IconButton color="inherit" onClick={onSidebarOpen}>
