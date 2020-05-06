@@ -33,7 +33,7 @@ const Admin = (props) => {
     window.location.href = "/sign-in";
   }
 
-  const { checkUserData } = useContext(UserContext);
+  const { dates } = useContext(UserContext);
   useEffect(() => {
     // checkUserData();
     axios
@@ -43,7 +43,7 @@ const Admin = (props) => {
       })
       .catch((err) => console.log(err));
   }, []);
-
+  console.log(selectedUser);
   return (
     <div>
       <div style={styles.topbar}>
@@ -97,9 +97,16 @@ const Admin = (props) => {
               <UsersByDevice />
             </Grid>
             <Grid item lg={8} md={12} xl={9} xs={12}>
-              <LatestOrders user={selectedUser} />
+              {selectedUser.tasks && <LatestOrders user={selectedUser} />}
             </Grid>
           </Grid>
+          <div style={{ marginTop: "20px" }}>
+            <Grid item lg={8} md={12} xl={9} xs={12}>
+              {selectedUser.userActivity && (
+                <LatestProducts userActivity={selectedUser.userActivity} />
+              )}
+            </Grid>
+          </div>
         </div>
       )}
     </div>

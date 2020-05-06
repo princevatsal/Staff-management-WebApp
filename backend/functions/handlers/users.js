@@ -119,6 +119,7 @@ exports.updateUserLocation = (req, res) => {
 exports.getUserInfo = (req, res) => {
   const uid = req.query.uid;
   var obj = {};
+  var someFetched = false;
   db.collection("users")
     .doc(uid)
     .get()
@@ -128,10 +129,17 @@ exports.getUserInfo = (req, res) => {
     })
     .then((tasks) => {
       obj.tasks = tasks.data();
+      return db.collection("user-activity").doc(uid).get();
+    })
+    .then((loc) => {
+      obj.userActivity = loc.data();
+      console.log("in final obg:-", obj);
       res.json(obj);
     })
     .catch((err) => {
       console.log(err);
+
+      res.json(obj);
       res.status(400).send("Error Fetching User");
     });
 };

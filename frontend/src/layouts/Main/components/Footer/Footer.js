@@ -27,11 +27,18 @@ const Footer = (props) => {
       <Typography variant="caption">
         Created with ❤ by{" "}
         <Link
-          href="https://pricevatsal.com"
+          href="https://priyanshvatsal.com"
           target="_blank"
           rel="noopener noreferrer"
         >
-          creativeCoders
+          Priyansh
+        </Link>
+        <Link
+          href="http://ayushk.dx.am"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Ayush
         </Link>
       </Typography>
     </div>
