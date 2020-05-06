@@ -79,16 +79,23 @@ const LatestOrders = (props) => {
   const [orders] = useState(mockData);
   const { dates, userData } = useContext(UserContext);
   const [tasks, setTasks] = useState([]);
-
+  const [tempTasks, setTempTasks] = useState([]);
+  const [sin, setSIN] = useState("");
   useEffect(() => {
-    var filteredTasks = filterTask(userData.tasks.taskList, dates.date);
-    setTasks(
-      filteredTasks.map((task) => {
-        let StartTime = formatDate(task.start);
-        let EndTime = formatDate(task.end);
-        return { time: StartTime + "--" + EndTime, details: task.details };
-      })
-    );
+    var filteredTasks = userData.tasks
+      ? filterTask(userData.tasks.taskList, dates.date)
+      : [];
+    let temp = filteredTasks.map((task) => {
+      let StartTime = formatDate(task.start);
+      let EndTime = formatDate(task.end);
+      return {
+        time: StartTime + "--" + EndTime,
+        details: task.details,
+        sinNumber: task.sinNumber ? task.sinNumber : "",
+      };
+    });
+    setTasks(temp);
+    setTempTasks(temp);
   }, [dates]);
 
   return (
@@ -102,7 +109,19 @@ const LatestOrders = (props) => {
         }
         subheader={
           <div style={{ paddingRight: "20px", paddingTop: "10px" }}>
-            <TextField label="Enter SIN No." />
+            <TextField
+              label="Enter SIN No."
+              value={sin}
+              onChange={(e) => {
+                console.log(e.target.value);
+                setSIN(e.target.value);
+                let temp = tasks.filter((task) =>
+                  task.sinNumber.startsWith(e.target.value)
+                );
+                if (e.target.value) setTempTasks(temp);
+                else setTempTasks(tasks);
+              }}
+            />
           </div>
         }
       />
@@ -116,14 +135,16 @@ const LatestOrders = (props) => {
                   <TableCell>Task No</TableCell>
                   <TableCell>Task Details </TableCell>
                   <TableCell>Timing</TableCell>
+                  <TableCell>SIN Number</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {tasks.map((task, index) => (
+                {tempTasks.map((task, index) => (
                   <TableRow hover key={index}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{task.details}</TableCell>
                     <TableCell>{task.time}</TableCell>
+                    <TableCell>{task.sinNumber}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

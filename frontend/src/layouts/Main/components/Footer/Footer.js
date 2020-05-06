@@ -31,7 +31,7 @@ const Footer = (props) => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Priyansh
+          Priyansh&nbsp;
         </Link>
         <Link
           href="http://ayushk.dx.am"

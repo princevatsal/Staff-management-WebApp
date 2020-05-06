@@ -46,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
   actions: {
     justifyContent: "flex-end",
   },
+  sinNumber: {
+    marginLeft: theme.spacing(4),
+  },
 }));
 
 const statusColors = {
@@ -83,6 +86,7 @@ const initInfo = {
   start: new Date(),
   end: new Date(),
   details: "",
+  sinNumber: "",
 };
 const LatestOrders = (props) => {
   const { className, user, ...rest } = props;
@@ -94,13 +98,17 @@ const LatestOrders = (props) => {
   const [info, setInfo] = useState(initInfo);
   const [refresh, setRefresh] = useState(false);
   useEffect(() => {
-    let tasklist = user ? user.tasks.taskList : userData.tasks.taskList;
+    let tasklist = user.tasks ? user.tasks.taskList : [];
     var filteredTasks = filterTask(tasklist, dates.date);
     setTasks(
       filteredTasks.map((task) => {
         let StartTime = formatDate(task.start);
         let EndTime = formatDate(task.end);
-        return { time: StartTime + "--" + EndTime, details: task.details };
+        return {
+          time: StartTime + "--" + EndTime,
+          details: task.details,
+          sinNumber: task.sinNumber ? task.sinNumber : "",
+        };
       })
     );
     //
@@ -108,7 +116,7 @@ const LatestOrders = (props) => {
     localtime.setDate(dates.date.getDate());
     localtime.setMonth(dates.date.getMonth());
     localtime.setFullYear(dates.date.getFullYear());
-    setInfo({ start: localtime, end: localtime, details: "" });
+    setInfo({ start: localtime, end: localtime, details: "", sinNumber: "" });
     //
   }, [dates, user, refresh]);
 
@@ -159,6 +167,13 @@ const LatestOrders = (props) => {
               value={info.details}
               onChange={(e) => setInfo({ ...info, details: e.target.value })}
             />
+
+            <Input
+              className={classes.sinNumber}
+              placeholder="Enter SIN Number"
+              value={info.sinNumber}
+              onChange={(e) => setInfo({ ...info, sinNumber: e.target.value })}
+            />
           </div>
           <div style={{ padding: "20px" }}>
             <Button
@@ -172,17 +187,17 @@ const LatestOrders = (props) => {
                   data: {
                     task: info,
                     uid: user.user.credentials.uid,
-                    old: user.tasks.taskList,
+                    old: user.tasks ? user.tasks.taskList : [],
                   },
                 })
                   .then((data) => {
                     console.log(data.data);
-                    user.tasks.taskList.push(data.data);
+                    if (user.tasks) user.tasks.taskList.push(data.data);
+                    else user.tasks = { taskList: [data.data] };
                     console.log(user);
                     setRefresh(!refresh);
                   })
                   .catch((err) => console.log(err));
-                console.log(user.tasks.taskList);
               }}
             >
               Add
@@ -234,6 +249,7 @@ const LatestOrders = (props) => {
                   <TableCell>Task No</TableCell>
                   <TableCell>Task Details </TableCell>
                   <TableCell>Timing</TableCell>
+                  <TableCell>SIN Number</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -242,6 +258,9 @@ const LatestOrders = (props) => {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{task.details}</TableCell>
                     <TableCell>{task.time}</TableCell>
+                    <TableCell>
+                      {task.sinNumber ? task.sinNumber : "none"}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

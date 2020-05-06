@@ -186,6 +186,7 @@ exports.addTask = (req, res) => {
       _nanoseconds: firebase.firestore.Timestamp.fromDate(info.end).nanoseconds,
     },
     details: info.details,
+    sinNumber: info.sinNumber,
   };
 
   old.push(newTask);

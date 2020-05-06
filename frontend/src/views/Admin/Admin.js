@@ -97,14 +97,16 @@ const Admin = (props) => {
               <UsersByDevice />
             </Grid>
             <Grid item lg={8} md={12} xl={9} xs={12}>
-              {selectedUser.tasks && <LatestOrders user={selectedUser} />}
+              <LatestOrders user={selectedUser} />
             </Grid>
           </Grid>
           <div style={{ marginTop: "20px" }}>
             <Grid item lg={8} md={12} xl={9} xs={12}>
-              {selectedUser.userActivity && (
-                <LatestProducts userActivity={selectedUser.userActivity} />
-              )}
+              <LatestProducts
+                userActivity={
+                  selectedUser.userActivity ? selectedUser.userActivity : {}
+                }
+              />
             </Grid>
           </div>
         </div>

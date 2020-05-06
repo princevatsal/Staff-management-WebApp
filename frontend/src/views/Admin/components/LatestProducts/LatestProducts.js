@@ -65,10 +65,7 @@ const LatestProducts = (props) => {
 
   return (
     <Card {...rest} className={clsx(classes.root, className)}>
-      <CardHeader
-        subtitle={`${products.length} in total`}
-        title="Latest products"
-      />
+      <CardHeader subtitle={`${products.length} in total`} title="Locations" />
       <Divider />
       <CardContent className={classes.content}>
         <List>
