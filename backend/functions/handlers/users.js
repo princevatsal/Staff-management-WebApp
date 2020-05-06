@@ -18,7 +18,6 @@ exports.signup = (req, res) => {
     password: req.body.password,
     dlNo: req.body.dlNo,
   };
-  console.log(newUser);
 
   // Validate Data
   const { valid, errors } = validateSignupData(newUser);
@@ -82,7 +81,6 @@ exports.login = (req, res) => {
     .auth()
     .signInWithEmailAndPassword(user.email, user.password)
     .then((data) => {
-      console.log(data.user.getRefreshToken);
       return data.user.getIdToken();
     })
     .then((token) => res.json({ token }))
@@ -106,7 +104,6 @@ exports.updateUserLocation = (req, res) => {
   const uid = req.user.uid;
   const geo = req.body.geo;
   const timestamp = req.body.timestamp;
-  console.log(uid, geo, timestamp);
 
   db.collection("user-activity")
     .doc(uid)
@@ -170,8 +167,6 @@ exports.addTask = (req, res) => {
   info.start = new Date(info.start);
   info.end = new Date(info.end);
 
-  console.log(uid, info, old);
-
   const newTask = {
     start: {
       _seconds: firebase.firestore.Timestamp.fromDate(info.start).seconds,
@@ -184,7 +179,7 @@ exports.addTask = (req, res) => {
     },
     details: info.details,
   };
-  console.log("newTask:-", newTask);
+
   old.push(newTask);
   db.collection("tasks")
     .doc(uid)

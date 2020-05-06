@@ -50,28 +50,28 @@ const Sidebar = (props) => {
 
   const pages = [
     userData.user.isAdmin
-      ? {
+      ? ({
           title: "Admin",
           href: "/admin",
           icon: <DashboardIcon />,
-        }
+        },
+        {
+          title: "Users",
+          href: "/users",
+          icon: <PeopleIcon />,
+        })
       : {
           title: "Tasks",
           href: "/dashboard",
           icon: <DashboardIcon />,
         },
     {
-      title: "Users",
-      href: "/users",
-      icon: <PeopleIcon />,
-    },
-    {
       title: "Products",
       href: "/products",
       icon: <ShoppingBasketIcon />,
     },
     {
-      title: "Account",
+      title: "Profile",
       href: "/account",
       icon: <AccountBoxIcon />,
     },

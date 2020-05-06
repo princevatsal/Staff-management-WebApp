@@ -6,10 +6,9 @@ import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/styles";
 import {
   Card,
-  CardActions,
   CardHeader,
   CardContent,
-  Button,
+  TextField,
   Divider,
   Table,
   TableBody,
@@ -19,10 +18,8 @@ import {
   Tooltip,
   TableSortLabel,
 } from "@material-ui/core";
-import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import { UserContext } from "context/userContext";
 import mockData from "./data";
-import { StatusBullet } from "components";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -101,6 +98,11 @@ const LatestOrders = (props) => {
         action={
           <div style={{ paddingRight: "20px", paddingTop: "10px" }}>
             <h3 style={{ fontFamily: "sans-serif" }}>{dates.show}</h3>
+          </div>
+        }
+        subheader={
+          <div style={{ paddingRight: "20px", paddingTop: "10px" }}>
+            <TextField label="Enter SIN No." />
           </div>
         }
       />
