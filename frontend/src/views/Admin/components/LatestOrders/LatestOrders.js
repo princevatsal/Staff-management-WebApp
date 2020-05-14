@@ -97,6 +97,7 @@ const LatestOrders = (props) => {
   const [model, setModel] = useState(false);
   const [info, setInfo] = useState(initInfo);
   const [refresh, setRefresh] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   useEffect(() => {
     let tasklist = user.tasks ? user.tasks.taskList : [];
     var filteredTasks = filterTask(tasklist, dates.date);
@@ -179,6 +180,11 @@ const LatestOrders = (props) => {
             <Button
               styles={styles.addbtn}
               onClick={() => {
+                console.log("tasks:-", tasks);
+                if (tasks.length > 0 && !editMode) {
+                  alert("you cannot add more that one task for a single day");
+                  return false;
+                }
                 setModel(false);
                 console.log(info, user.user);
                 axios({
@@ -187,26 +193,32 @@ const LatestOrders = (props) => {
                   data: {
                     task: info,
                     uid: user.user.credentials.uid,
-                    old: user.tasks ? user.tasks.taskList : [],
+                    old: editMode ? [] : user.tasks ? user.tasks.taskList : [],
                   },
                 })
                   .then((data) => {
                     console.log(data.data);
-                    if (user.tasks) user.tasks.taskList.push(data.data);
+                    if (user.tasks && !editMode)
+                      user.tasks.taskList.push(data.data);
                     else user.tasks = { taskList: [data.data] };
                     console.log(user);
                     setRefresh(!refresh);
+                    setEditMode(false);
                   })
-                  .catch((err) => console.log(err));
+                  .catch((err) => {
+                    console.log(err);
+                    setEditMode(false);
+                  });
               }}
             >
-              Add
+              {editMode ? "Edit" : "Add"}
             </Button>
             <Button
               styles={styles.addbtn}
               onClick={() => {
                 setModel(false);
                 setInfo(initInfo);
+                setEditMode(false);
               }}
             >
               Cancel
@@ -250,6 +262,7 @@ const LatestOrders = (props) => {
                   <TableCell>Task Details </TableCell>
                   <TableCell>Timing</TableCell>
                   <TableCell>SIN Number</TableCell>
+                  <TableCell>Edit</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -260,6 +273,17 @@ const LatestOrders = (props) => {
                     <TableCell>{task.time}</TableCell>
                     <TableCell>
                       {task.sinNumber ? task.sinNumber : "none"}
+                    </TableCell>
+                    <TableCell>
+                      <img
+                        src="images/pencil.png"
+                        style={{ height: "30px", width: "30px" }}
+                        onClick={(e) => {
+                          console.log("edit mode ", e.target);
+                          setEditMode(true);
+                          setModel(true);
+                        }}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
