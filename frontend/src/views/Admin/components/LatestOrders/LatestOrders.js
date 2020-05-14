@@ -82,6 +82,13 @@ const filterTask = (tasklist, finaldate) =>
     let date = new Date(task.start._seconds * 1000).toLocaleDateString();
     if (today === date) return true;
   });
+const filterTaskRem = (tasklist, finaldate) =>
+  tasklist.filter((task) => {
+    let today = finaldate.toLocaleDateString();
+    let date = new Date(task.start._seconds * 1000).toLocaleDateString();
+    if (today === date) return false;
+    else return true;
+  });
 const initInfo = {
   start: new Date(),
   end: new Date(),
@@ -180,28 +187,35 @@ const LatestOrders = (props) => {
             <Button
               styles={styles.addbtn}
               onClick={() => {
-                console.log("tasks:-", tasks);
                 if (tasks.length > 0 && !editMode) {
                   alert("you cannot add more that one task for a single day");
                   return false;
                 }
                 setModel(false);
-                console.log(info, user.user);
+                let prevOld = user.tasks
+                  ? editMode
+                    ? filterTaskRem(user.tasks.taskList, dates.date)
+                    : user.tasks.taskList
+                  : [];
                 axios({
                   method: "post",
                   url: "/addtask",
                   data: {
                     task: info,
                     uid: user.user.credentials.uid,
-                    old: editMode ? [] : user.tasks ? user.tasks.taskList : [],
+                    old: prevOld,
                   },
                 })
                   .then((data) => {
                     console.log(data.data);
-                    if (user.tasks && !editMode)
-                      user.tasks.taskList.push(data.data);
-                    else user.tasks = { taskList: [data.data] };
-                    console.log(user);
+                    if (editMode) {
+                      prevOld.push(data.data);
+                      console.log("Setting usertaks ", prevOld);
+                      user.tasks.taskList = prevOld;
+                    } else {
+                      if (user.tasks) user.tasks.taskList.push(data.data);
+                      else user.tasks = { taskList: [data.data] };
+                    }
                     setRefresh(!refresh);
                     setEditMode(false);
                   })
