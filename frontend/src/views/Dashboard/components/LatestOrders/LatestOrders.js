@@ -66,13 +66,29 @@ function tConv24(time24) {
   return ts;
 }
 //filter today by given Date
-const filterTask = (tasklist, finaldate) =>
-  tasklist.filter((task) => {
-    let today = finaldate.toLocaleDateString();
+const filterTask = (tasklist, finaldate) => {
+  // changes for showing past seven days tasks
+  var dates = [];
+  for (var i = 0; i < 4; i++) {
+    let temp = new Date(finaldate.getTime() - i * 24 * 60 * 60 * 1000);
+    dates.push(temp);
+  }
+  for (var i = 1; i <= 3; i++) {
+    let temp = new Date(finaldate.getTime() + i * 24 * 60 * 60 * 1000);
+    dates.push(temp);
+  }
+  console.log(dates);
+  //
+  return tasklist.filter((task) => {
+    //let today = finaldate.toLocaleDateString();
     let date = new Date(task.start._seconds * 1000).toLocaleDateString();
-    if (today === date) return true;
+    let flag = false;
+    dates.forEach((dat) => {
+      if (date === dat.toLocaleDateString()) flag = true;
+    });
+    return flag;
   });
-
+};
 const LatestOrders = (props) => {
   const { className, ...rest } = props;
   const classes = useStyles();
@@ -81,6 +97,12 @@ const LatestOrders = (props) => {
   const [tasks, setTasks] = useState([]);
   const [tempTasks, setTempTasks] = useState([]);
   const [sin, setSIN] = useState("");
+  const [modal,setModal]=useState(false);
+  const initModalData={
+    date:null,
+    time:null
+  }
+  const [modalData,setModalData]=initModalData
   useEffect(() => {
     var filteredTasks = userData.tasks
       ? filterTask(userData.tasks.taskList, dates.date)
@@ -88,10 +110,12 @@ const LatestOrders = (props) => {
     let temp = filteredTasks.map((task) => {
       let StartTime = formatDate(task.start);
       let EndTime = formatDate(task.end);
+
       return {
         time: StartTime + "--" + EndTime,
         details: task.details,
         sinNumber: task.sinNumber ? task.sinNumber : "",
+        date: new Date(task.start._seconds * 1000),
       };
     });
     setTasks(temp);
@@ -133,16 +157,30 @@ const LatestOrders = (props) => {
               <TableHead>
                 <TableRow>
                   <TableCell>Task No</TableCell>
-                  <TableCell>Task Details </TableCell>
+                  <TableCell>Date </TableCell>
                   <TableCell>Timing</TableCell>
                   <TableCell>SIN Number</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {tempTasks.map((task, index) => (
-                  <TableRow hover key={index}>
+                  <TableRow
+                    hover
+                    key={index}
+                    style={
+                      dates.date.toLocaleDateString() ===
+                      task.date.toLocaleDateString()
+                        ? { borderBottom: "50px" }
+                        : { background: "#eee" }
+                    }
+                    onClick={(e) => {
+                      var tr=e.target.parentElement;
+                      setModalData({date:,time})
+                    }
+                    }
+                  >
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{task.details}</TableCell>
+                    <TableCell>{task.date.toLocaleString()}</TableCell>
                     <TableCell>{task.time}</TableCell>
                     <TableCell>{task.sinNumber}</TableCell>
                   </TableRow>
