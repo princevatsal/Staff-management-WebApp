@@ -15,14 +15,42 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Tooltip,
-  TableSortLabel,
+  Modal,
+  Button,
 } from "@material-ui/core";
 import { UserContext } from "context/userContext";
 import mockData from "./data";
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  detailCardContainer: {
+    display: "flex",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    fontFamily: "sans-serif",
+    fontSize: 20,
+  },
+  detailCard: {
+    width: 375,
+    height: 325,
+    padding: 40,
+  },
+  cardDate: {
+    fontSize: 20,
+    marginBottom: 12,
+    color: "#555",
+  },
+  cardTime: {
+    marginBottom: 12,
+    color: "#555",
+  },
+  cardDetails: {
+    fontSize: 20,
+  },
+  cardButton: {
+    display: "flex",
+    bottom: -120,
+  },
   content: {
     padding: 0,
   },
@@ -77,7 +105,6 @@ const filterTask = (tasklist, finaldate) => {
     let temp = new Date(finaldate.getTime() + i * 24 * 60 * 60 * 1000);
     dates.push(temp);
   }
-  console.log(dates);
   //
   return tasklist.filter((task) => {
     //let today = finaldate.toLocaleDateString();
@@ -90,19 +117,20 @@ const filterTask = (tasklist, finaldate) => {
   });
 };
 const LatestOrders = (props) => {
-  const { className, ...rest } = props;
+  const { className, sinNUM, enterSin, ...rest } = props;
   const classes = useStyles();
   const [orders] = useState(mockData);
   const { dates, userData } = useContext(UserContext);
   const [tasks, setTasks] = useState([]);
   const [tempTasks, setTempTasks] = useState([]);
   const [sin, setSIN] = useState("");
-  const [modal,setModal]=useState(false);
-  const initModalData={
-    date:null,
-    time:null
-  }
-  const [modalData,setModalData]=initModalData
+  const [modal, setModal] = useState(false);
+  const initModalData = {
+    date: "",
+    time: "",
+    details: "",
+  };
+  const [modalData, setModalData] = useState(initModalData);
   useEffect(() => {
     var filteredTasks = userData.tasks
       ? filterTask(userData.tasks.taskList, dates.date)
@@ -120,10 +148,42 @@ const LatestOrders = (props) => {
     });
     setTasks(temp);
     setTempTasks(temp);
-  }, [dates]);
+    //
+    let temp2 = tasks.filter((task) => task.sinNumber === sinNUM);
+    if (sinNUM) setTempTasks(temp2);
+    else setTempTasks([]);
+    //
+  }, [dates, sinNUM]);
 
   return (
-    <Card {...rest} className={clsx(classes.root, className)}>
+    <Card {...rest} className={clsx(className)}>
+      <Modal
+        open={modal}
+        className={classes.detailCardContainer}
+        onClose={() => {
+          setModal(false);
+          setModalData(initModalData);
+        }}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <Card className={classes.detailCard}>
+          <h2 className={classes.cardDate}>Date: {modalData.date}</h2>
+          <h3 className={classes.cardTime}>Time: {modalData.time}</h3>
+          <h3 className={classes.cardDetails}>Details: {modalData.details}</h3>
+          <Button
+            className={classes.cardButton}
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              setModal(false);
+              setModalData(initModalData);
+            }}
+          >
+            OK
+          </Button>
+        </Card>
+      </Modal>
       <CardHeader
         title="Latest Tasks"
         action={
@@ -133,19 +193,13 @@ const LatestOrders = (props) => {
         }
         subheader={
           <div style={{ paddingRight: "20px", paddingTop: "10px" }}>
-            <TextField
-              label="Enter SIN No."
-              value={sin}
-              onChange={(e) => {
-                console.log(e.target.value);
-                setSIN(e.target.value);
-                let temp = tasks.filter((task) =>
-                  task.sinNumber.startsWith(e.target.value)
-                );
-                if (e.target.value) setTempTasks(temp);
-                else setTempTasks(tasks);
+            <Button
+              onClick={() => {
+                enterSin();
               }}
-            />
+            >
+              ReEnter SIN{" "}
+            </Button>
           </div>
         }
       />
@@ -160,6 +214,7 @@ const LatestOrders = (props) => {
                   <TableCell>Date </TableCell>
                   <TableCell>Timing</TableCell>
                   <TableCell>SIN Number</TableCell>
+                  <TableCell>Details</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -174,15 +229,20 @@ const LatestOrders = (props) => {
                         : { background: "#eee" }
                     }
                     onClick={(e) => {
-                      var tr=e.target.parentElement;
-                      setModalData({date:,time})
-                    }
-                    }
+                      var tr = e.target.parentElement;
+                      setModalData({
+                        date: tr.children[1].innerHTML,
+                        time: tr.children[2].innerHTML,
+                        details: tr.children[4].innerHTML,
+                      });
+                      setModal(true);
+                    }}
                   >
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{task.date.toLocaleString()}</TableCell>
+                    <TableCell>{task.date.toLocaleDateString()}</TableCell>
                     <TableCell>{task.time}</TableCell>
                     <TableCell>{task.sinNumber}</TableCell>
+                    <TableCell>{task.details}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
