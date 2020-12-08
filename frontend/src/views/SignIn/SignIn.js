@@ -191,7 +191,7 @@ const SignIn = (props) => {
       password: formState.values.password,
     };
     axios
-      .post("/login", loginData)
+      .post("https://asia-northeast1-staff-management-a6803.cloudfunctions.net/api/login", loginData)
       .then((res) => {
         setLoading(false);
         localStorage.setItem("token", res.data.token);
@@ -223,7 +223,7 @@ const SignIn = (props) => {
             },
           };
           axios
-            .post("/updateUserLocation", geoData)
+            .post("https://asia-northeast1-staff-management-a6803.cloudfunctions.net/api/updateUserLocation", geoData)
             .then((res) => {
               console.log(res);
               window.location.href = "/";

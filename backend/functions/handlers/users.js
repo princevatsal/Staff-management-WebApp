@@ -1,7 +1,8 @@
 const firebase = require("firebase");
 const { admin, db } = require("../utils/admin");
+
 // INITIALIZE FIREBASE CLIENT
-const config = require("../utils/config");
+const config = require("../utils/config").config;
 firebase.initializeApp(config);
 
 // VALIDATORS
@@ -18,11 +19,11 @@ exports.signup = (req, res) => {
     password: req.body.password,
     dlNo: req.body.dlNo,
   };
-
+  console.log("signing up user")
   // Validate Data
   const { valid, errors } = validateSignupData(newUser);
   if (!valid) return res.status(400).json(errors);
-
+  console.log("here")
   // Set temp variables
   const noImg = "no-img.png";
   let token, userId;
@@ -32,10 +33,12 @@ exports.signup = (req, res) => {
     .auth()
     .createUserWithEmailAndPassword(newUser.email, newUser.password)
     .then((data) => {
+      console.log("here first")
       userId = data.user.uid;
       return data.user.getIdToken();
     })
     .then((idToken) => {
+      console.log("in first then")
       token = idToken;
       const userCredentials = {
         name: newUser.name,
@@ -51,9 +54,11 @@ exports.signup = (req, res) => {
         .set({ credentials: userCredentials });
     })
     .then(() => {
+      console.log("in second then ")
       return res.status(201).json({ token });
     })
     .catch((err) => {
+      console.log("in this catch")
       console.log(err);
       if (err.code === "auth/email-already-in-use") {
         return res.status(400).json({ general: err.message });

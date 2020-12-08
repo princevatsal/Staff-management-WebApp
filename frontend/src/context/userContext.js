@@ -27,7 +27,7 @@ export const UserProvider = ({ children }) => {
   };
   const checkUserData = () => {
     if (localStorage.token && !state.userData) {
-      axios.get("/getUserInfoByToken").then((data) => {
+      axios.get("https://asia-northeast1-staff-management-a6803.cloudfunctions.net/api/getUserInfoByToken").then((data) => {
         dispatch({ type: SET_USER, payload: data.data });
       });
     }

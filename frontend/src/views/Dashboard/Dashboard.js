@@ -81,7 +81,7 @@ const Dashboard = (props) => {
     </div>
   ) : (
     <div className={classes.root}>
-      <Modal
+      {/* <Modal
         open={sinModal}
         className={classes.cardContainer}
         onClose={() => {
@@ -119,7 +119,7 @@ const Dashboard = (props) => {
             </Button>
           </CardActions>
         </Card>
-      </Modal>
+      </Modal> */}
       <Grid container spacing={4}>
         {/* <Grid item lg={3} sm={6} xl={3} xs={12}>
           <Budget />

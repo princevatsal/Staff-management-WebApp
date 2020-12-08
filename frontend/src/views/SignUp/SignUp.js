@@ -206,7 +206,7 @@ const SignUp = (props) => {
     }
     axios({
       method: "post",
-      url: "/signup",
+      url: "https://asia-northeast1-staff-management-a6803.cloudfunctions.net/api/signup",
       data: {
         email: formState.values.email,
         password: formState.values.password,

@@ -8,7 +8,7 @@ const Loading = () => {
       window.location.href = "/";
     } else {
       let token = localStorage.getItem("token");
-      axios.get("/api/getUserInfo").then((data) => {});
+      axios.get("https://asia-northeast1-staff-management-a6803.cloudfunctions.net/api/getUserInfo").then((data) => {});
     }
   }, [loading]);
   return (

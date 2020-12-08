@@ -16,7 +16,7 @@ const Loading = (props) => {
     }
     if (localStorage.token && !userData) {
       axios
-        .get("/getUserInfoByToken")
+        .get("https://asia-northeast1-staff-management-a6803.cloudfunctions.net/api/getUserInfoByToken")
         .then((res) => {
           setUserData(res.data);
           console.log(res);

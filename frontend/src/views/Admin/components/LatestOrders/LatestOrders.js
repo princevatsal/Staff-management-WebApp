@@ -199,7 +199,7 @@ const LatestOrders = (props) => {
                   : [];
                 axios({
                   method: "post",
-                  url: "/addtask",
+                  url: "https://asia-northeast1-staff-management-a6803.cloudfunctions.net/api/addtask",
                   data: {
                     task: info,
                     uid: user.user.credentials.uid,

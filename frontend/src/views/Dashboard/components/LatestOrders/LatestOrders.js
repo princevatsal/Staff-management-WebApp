@@ -149,9 +149,9 @@ const LatestOrders = (props) => {
     setTasks(temp);
     setTempTasks(temp);
     //
-    let temp2 = tasks.filter((task) => task.sinNumber === sinNUM);
-    if (sinNUM) setTempTasks(temp2);
-    else setTempTasks([]);
+    // let temp2 = tasks.filter((task) => task.sinNumber === sinNUM);
+    // if (sinNUM) setTempTasks(temp2);
+    // else setTempTasks([]);
     //
   }, [dates, sinNUM]);
 

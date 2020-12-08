@@ -52,6 +52,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "http://localhost:5000/staff-management-753e4/asia-northeast1/api"
-}
+  }
+ }

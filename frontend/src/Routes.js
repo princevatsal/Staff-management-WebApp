@@ -29,10 +29,11 @@ const Routes = () => {
   React.useEffect(() => {
     if (token && !userData) {
       axios
-        .get("/getUserInfoByToken")
+        .get("https://asia-northeast1-staff-management-a6803.cloudfunctions.net/api/getUserInfoByToken")
         .then((res) => {
           setUserData(res.data);
-          res.data.user.isAdmin && setAdminState(true);
+          console.log("ress:-",res.data)
+          res.data.user.credentials.isAdmin && setAdminState(true);
           setLoading(false);
         })
         .catch((err) => alert("Unable to fetch user err : ", err));
